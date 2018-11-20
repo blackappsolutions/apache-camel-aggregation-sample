@@ -20,14 +20,25 @@ public class MyDBRouteBuilder extends RouteBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(MyDBRouteBuilder.class);
 
     public void configure() {
-        ExpressionAdapter grpCnt = new ExpressionAdapter() {
+        ExpressionAdapter correlationExpression = new ExpressionAdapter() {
             @Override
             public String evaluate(Exchange exchange) {
-                return String.valueOf(exchange.getIn().getBody(MultiSteps.class).grpCnt);
+                return String.valueOf(getEntity(exchange).groupId);
             }
+
+            private MultiSteps getEntity(Exchange exchange) {
+                return exchange.getIn().getBody(MultiSteps.class);
+            }
+
         };
-        from("jpa://test.MultiSteps?consumeDelete=true")
-                .aggregate(grpCnt, new GroupedBodyAggregationStrategy()).completionSize(grpCnt)
+        from("jpa://test.MultiSteps" +
+                "?consumer.query=Select mul from test.MultiSteps as mul order by mul.step, mul.groupId asc" +
+                "&consumeDelete=true")
+                .aggregate(
+                        correlationExpression,
+                        new GroupedBodyAggregationStrategy()
+                )
+                .completionFromBatchConsumer()
                 .log(LoggingLevel.DEBUG, LOGGER, "trx_imp_notification")
                 .process(new MyProcessor())
                 .marshal().string("UTF-8")
@@ -38,7 +49,12 @@ public class MyDBRouteBuilder extends RouteBuilder {
         @Override
         public void process(Exchange exchange) {
             ArrayList list = exchange.getIn().getBody(ArrayList.class);
-            out.println(list.size());
+            out.println("-------------------------------------");
+            for (Object listItem : list) {
+                MultiSteps entity = (MultiSteps) listItem;
+                out.println(entity.step + " | " + entity.groupId);
+            }
+            out.println("-------------------------------------");
         }
     }
 }

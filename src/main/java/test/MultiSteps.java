@@ -6,8 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Formula;
-
 @Entity
 @Table(name = "MULTISTEPS")
 @NamedQuery(
@@ -25,10 +23,4 @@ public class MultiSteps {
 
     @Column(name = "group_id")
     public Integer groupId;
-
-    @Formula("(Select count(m.group_id)" +
-            "  from MultiSteps m" +
-            "  where m.group_id = group_id" +
-            "  group by m.group_id)")
-    public Integer grpCnt;
 }
