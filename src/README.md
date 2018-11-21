@@ -1,29 +1,33 @@
 ```
-create table MULTISTEPS
+create table Master
 (
-     STEP NUMBER not null
-          constraint MULTISTEPS_PK
-          primary key,
-     DESCRIPTION VARCHAR2(100),
-     GROUP_ID NUMBER
-)
+	stepNumber int not null,
+	stepName varchar(100) not null,
+	description varchar(200) null,
+	group_id int null,
+	primary key (stepNumber, stepName)
+);
 
-delete from MULTISTEPS;
-insert into MULTISTEPS VALUES (1, 'abc', 1);
-insert into MULTISTEPS VALUES (3, 'abc', 2);
-insert into MULTISTEPS VALUES (4, 'abc', 2);
-insert into MULTISTEPS VALUES (2, 'abc', 1);
-insert into MULTISTEPS VALUES (5, 'abc', 2);
+insert into Master VALUES (2, '2_1', null, 1);
+insert into Master VALUES (1, '1_1', null, 1);
+insert into Master VALUES (1, '1_2', null, 2);
+insert into Master VALUES (3, '3_1', null, 1);
+insert into Master VALUES (2, '2_2', null, 2);
+insert into Master VALUES (1, '1_3', null, 3);
 
-select
-     t.STEP,
-     (
-     Select count(m.GROUP_ID)
-     from MULTISTEPS m
-     where m.GROUP_ID = t.GROUP_ID
-     group by m.GROUP_ID
-     ) AS "GRP_CNT"
-from
-     MULTISTEPS t
-;
+create table Detail
+(
+	stepNumber int not null,
+	stepName varchar(100) not null,
+	detailName varchar(100) not null
+		primary key,
+	constraint detail_ibfk_1
+		foreign key (stepNumber, stepName) references Master (stepNumber, stepName)
+);
+
+INSERT into Detail VALUES (2, '2_1', 'a');
+INSERT into Detail VALUES (2, '2_1', 'b');
+INSERT into Detail VALUES (2, '2_1', 'c');
+INSERT into Detail VALUES (2, '2_1', 'd');
+
 ```

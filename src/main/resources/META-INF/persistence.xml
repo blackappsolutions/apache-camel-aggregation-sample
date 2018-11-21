@@ -4,13 +4,15 @@
 
     <persistence-unit name="camel">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>test.MultiSteps</class>
+        <class>test.data.Master</class>
+        <class>test.data.Detail</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
-            <property name="javax.persistence.jdbc.user" value="batch_de"/>
-            <property name="javax.persistence.jdbc.password" value="batch_de"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/test"/>
+            <property name="javax.persistence.jdbc.user" value="root"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <!--<property name="hibernate.hbm2ddl.auto" value="update"/>-->
         </properties>
     </persistence-unit>
 
