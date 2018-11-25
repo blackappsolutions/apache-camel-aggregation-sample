@@ -6,9 +6,11 @@ import java.util.Objects;
 
 @Entity
 @NamedQueries(
-    @NamedQuery(name = "selectAll", query = "Select m from Master m")
+    @NamedQuery(name = Master.SELECT_ALL, query = "Select m from Master m")
 )
 public class Master {
+
+    public static final String SELECT_ALL = "selectAll";
 
     @EmbeddedId
     public MasterID masterID;
